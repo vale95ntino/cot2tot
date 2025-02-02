@@ -1,0 +1,1120 @@
+{
+    "reasoning": [
+        {
+            "id": "1",
+            "text": "Okay, let's see. I need to solve this problem where three people (Chef, head server, sous-chef) have transceivers that can communicate directly if within R meters. If not, but there's a third person acting as a bridge, then they can still communicate. The goal is to check if all three can communicate with each other, possibly through the third.",
+            "metadata": null
+        },
+        {
+            "id": "2",
+            "text": "Hmm. So for each test case, given R and three points, determine if the three form a connected graph where each pair is either directly connected (distance <= R) or connected via the third.",
+            "metadata": null
+        },
+        {
+            "id": "3",
+            "text": "Wait, but how exactly? Let's think. The communication can go through one intermediary. So all three must be in a chain where each consecutive pair is within R, or perhaps any two are connected via a path through the third.",
+            "metadata": null
+        },
+        {
+            "id": "4",
+            "text": "Wait, the problem says: if two can't talk directly but there's a third that is close enough to both, then they can communicate through that third. So the communication graph must be connected. But the three people can form a triangle where each is connected to the others directly, or there's a central node that connects the other two.",
+            "metadata": null
+        },
+        {
+            "id": "5",
+            "text": "So the condition is that all three can communicate with each other, possibly through one another. So the overall structure must allow for any two of them to communicate, either directly or via the third.",
+            "metadata": null
+        },
+        {
+            "id": "6",
+            "text": "But how do I model this? Let's think in terms of possible scenarios where the three can communicate:",
+            "metadata": null
+        },
+        {
+            "id": "7",
+            "text": "Case 1: All three are pairwise within R. Then yes.",
+            "metadata": null
+        },
+        {
+            "id": "8",
+            "text": "Case 2: Two pairs are within R. For example, Chef to head server is within R, head server to sous-chef is within R. Then Chef and sous-chef can communicate through the head server. So all three can communicate.",
+            "metadata": null
+        },
+        {
+            "id": "9",
+            "text": "Case 3: Only one pair is within R, but the third is connected to both via that pair. Wait, no. For example, Chef and head server are within R. Chef and sous-chef are not. Head server and sous-chef are not. Then can the sous-chef communicate with Chef through the head server? Well, sous-chef would need to be within R of the head server, but that's not the case here. Wait, no. So if the head server is connected to Chef (distance <= R), and sous-chef is connected to the head server (distance <= R), then yes. But if the sous-chef is connected to neither, but connected via the Chef and head server? No. Wait, no. Because if the sous-chef is only connected to the Chef, but the Chef is connected to the head server, then sous-chef can communicate with the head server via Chef. But all three would need to form a connected graph.",
+            "metadata": null
+        },
+        {
+            "id": "10",
+            "text": "Wait, perhaps the correct approach is to model the three points as a graph where edges exist between pairs if their distance is <= R. Then, check if the graph is connected. If the graph is connected, then all nodes are reachable via some path. For three nodes, the possible connected graphs are:",
+            "metadata": null
+        },
+        {
+            "id": "11",
+            "text": "- All three nodes connected directly (triangle).",
+            "metadata": null
+        },
+        {
+            "id": "12",
+            "text": "- A chain (A connected to B, B connected to C). Then A and C can communicate via B.",
+            "metadata": null
+        },
+        {
+            "id": "13",
+            "text": "So for the problem, we need to check if the three points form a connected graph in this sense.",
+            "metadata": null
+        },
+        {
+            "id": "14",
+            "text": "So the steps for each test case would be:",
+            "metadata": null
+        },
+        {
+            "id": "15",
+            "text": "1. Calculate the pairwise distances between all three points.",
+            "metadata": null
+        },
+        {
+            "id": "16",
+            "text": "2. For each pair, determine if the distance is <= R. If yes, that pair is connected.",
+            "metadata": null
+        },
+        {
+            "id": "17",
+            "text": "3. Then check if the graph formed by these edges is connected. If yes, output 'yes', else 'no'.",
+            "metadata": null
+        },
+        {
+            "id": "18",
+            "text": "But how to check if the graph is connected with three nodes?",
+            "metadata": null
+        },
+        {
+            "id": "19",
+            "text": "Well, for three nodes, the graph is connected if there's at least two edges such that all three are connected. For example:",
+            "metadata": null
+        },
+        {
+            "id": "20",
+            "text": "If there are two edges (A-B and B-C), then connected. If all three have edges (A-B, B-C, A-C), connected. If two edges (A-B and A-C), connected.",
+            "metadata": null
+        },
+        {
+            "id": "21",
+            "text": "Alternatively, if there's at least two edges and they form a connected structure. So another approach is to check if all three are reachable via the edges.",
+            "metadata": null
+        },
+        {
+            "id": "22",
+            "text": "But with three nodes, perhaps it's easier to check all possible conditions.",
+            "metadata": null
+        },
+        {
+            "id": "23",
+            "text": "So possible scenarios where the graph is connected:",
+            "metadata": null
+        },
+        {
+            "id": "24",
+            "text": "1. All three pairs have distance <= R. So all three edges exist. Then yes.",
+            "metadata": null
+        },
+        {
+            "id": "25",
+            "text": "2. Exactly two edges exist, and they form a chain. For example, A connected to B, B connected to C. Then A can reach C via B. So yes.",
+            "metadata": null
+        },
+        {
+            "id": "26",
+            "text": "3. Exactly one edge exists. Then only two nodes are connected, the third is isolated. So the graph is disconnected. So no.",
+            "metadata": null
+        },
+        {
+            "id": "27",
+            "text": "4. If two edges exist but not forming a chain, like A connected to B, A connected to C. Then the graph is connected. Because B and C can communicate through A.",
+            "metadata": null
+        },
+        {
+            "id": "28",
+            "text": "So in this case, if any two of the three pairs are connected, and there exists a third node that connects to at least one of them, then the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "29",
+            "text": "Wait, no. Let's think: if A is connected to B and A is connected to C, then B can reach C through A. So the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "30",
+            "text": "So for three nodes, the graph is connected if the number of edges is >=2, and the edges are such that all three are connected. Which for three nodes, if there are two edges, then it's possible to have a connected graph.",
+            "metadata": null
+        },
+        {
+            "id": "31",
+            "text": "So the possible conditions for the graph to be connected are:",
+            "metadata": null
+        },
+        {
+            "id": "32",
+            "text": "- There are at least two edges, and all three nodes are connected via those edges.",
+            "metadata": null
+        },
+        {
+            "id": "33",
+            "text": "Which can be checked by:",
+            "metadata": null
+        },
+        {
+            "id": "34",
+            "text": "Either:",
+            "metadata": null
+        },
+        {
+            "id": "35",
+            "text": "- All three nodes are connected via their edges (i.e., the edges form a triangle or a chain).",
+            "metadata": null
+        },
+        {
+            "id": "36",
+            "text": "Alternatively, for three nodes, the graph is connected if there exists a path between every pair of nodes. But with three nodes, that's possible if the graph is a triangle, a chain, or any two edges.",
+            "metadata": null
+        },
+        {
+            "id": "37",
+            "text": "Wait, perhaps the easiest way is to check if all three nodes are in the same connected component.",
+            "metadata": null
+        },
+        {
+            "id": "38",
+            "text": "How to compute that for three nodes?",
+            "metadata": null
+        },
+        {
+            "id": "39",
+            "text": "Well, let's see. For three nodes, there are three possible pairs: AB, BC, CA.",
+            "metadata": null
+        },
+        {
+            "id": "40",
+            "text": "We can represent the edges as a graph, then check if all three nodes are reachable from each other.",
+            "metadata": null
+        },
+        {
+            "id": "41",
+            "text": "But for three nodes, the connectedness can be determined by checking if the union of the edges connects all three.",
+            "metadata": null
+        },
+        {
+            "id": "42",
+            "text": "But maybe it's easier to consider the possible cases:",
+            "metadata": null
+        },
+        {
+            "id": "43",
+            "text": "Case 1: All three pairs are within R. Then connected.",
+            "metadata": null
+        },
+        {
+            "id": "44",
+            "text": "Case 2: Exactly two pairs are within R. Then check if the two edges form a connected graph.",
+            "metadata": null
+        },
+        {
+            "id": "45",
+            "text": "For example, if AB and BC are connected: then the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "46",
+            "text": "If AB and AC are connected: then the graph is connected (since B and C can communicate via A).",
+            "metadata": null
+        },
+        {
+            "id": "47",
+            "text": "If AB and CA are connected: same as above.",
+            "metadata": null
+        },
+        {
+            "id": "48",
+            "text": "Case 3: Exactly one pair is within R. Then the third node is disconnected, so no.",
+            "metadata": null
+        },
+        {
+            "id": "49",
+            "text": "Case 4: None of the pairs are within R. Then no.",
+            "metadata": null
+        },
+        {
+            "id": "50",
+            "text": "So for the code, perhaps the steps are:",
+            "metadata": null
+        },
+        {
+            "id": "51",
+            "text": "For each test case:",
+            "metadata": null
+        },
+        {
+            "id": "52",
+            "text": "1. Read R.",
+            "metadata": null
+        },
+        {
+            "id": "53",
+            "text": "2. Read the three points (A, B, C).",
+            "metadata": null
+        },
+        {
+            "id": "54",
+            "text": "3. Compute the pairwise distances between A-B, B-C, C-A.",
+            "metadata": null
+        },
+        {
+            "id": "55",
+            "text": "4. For each pair, determine if the distance is <= R. So check AB <= R, BC <= R, CA <= R.",
+            "metadata": null
+        },
+        {
+            "id": "56",
+            "text": "5. Now, check if the three nodes form a connected graph.",
+            "metadata": null
+        },
+        {
+            "id": "57",
+            "text": "The connected graph is possible if:",
+            "metadata": null
+        },
+        {
+            "id": "58",
+            "text": "Either:",
+            "metadata": null
+        },
+        {
+            "id": "59",
+            "text": "- All three pairs are connected (AB, BC, CA all <= R). Then yes.",
+            "metadata": null
+        },
+        {
+            "id": "60",
+            "text": "OR",
+            "metadata": null
+        },
+        {
+            "id": "61",
+            "text": "- Any two pairs are connected, and they share a common node (so forming a triangle or a chain). For example, AB and BC connected (sharing B), AB and AC connected (sharing A), etc.",
+            "metadata": null
+        },
+        {
+            "id": "62",
+            "text": "OR",
+            "metadata": null
+        },
+        {
+            "id": "63",
+            "text": "- All three can communicate through a central node. For example, AB and AC are connected (A is the central node), so B and C can communicate via A. So in this case, the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "64",
+            "text": "Alternatively, if two pairs are connected and those two pairs share a node (so the central node), then the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "65",
+            "text": "So for two edges:",
+            "metadata": null
+        },
+        {
+            "id": "66",
+            "text": "If two edges share a common node (like AB and AC), then connected.",
+            "metadata": null
+        },
+        {
+            "id": "67",
+            "text": "If the two edges are AB and BC, then connected (chain).",
+            "metadata": null
+        },
+        {
+            "id": "68",
+            "text": "But if two edges are AB and CA, then it's possible. Wait, AB is between A and B. CA is between C and A. So A is connected to both B and C. So B and C can communicate via A. So yes.",
+            "metadata": null
+        },
+        {
+            "id": "69",
+            "text": "So any two edges in the three-node graph will form a connected graph, because with three nodes, two edges must share at least one node (since there are three possible edges). Wait, no. For example, AB and BC: two edges, share B. AB and AC: two edges, share A. AB and CA: AB is A-B, CA is C-A. So A is connected to B and C. So all three are connected.",
+            "metadata": null
+        },
+        {
+            "id": "70",
+            "text": "But what if two edges are AB and CD (but CD is not part of our three nodes). Wait, no, the three nodes are A, B, C. So any two edges must be between pairs of these three.",
+            "metadata": null
+        },
+        {
+            "id": "71",
+            "text": "So, in three nodes, any two edges will form a connected graph. Because the two edges have to connect two pairs, but given that there are three nodes, two edges must form a chain or a fork.",
+            "metadata": null
+        },
+        {
+            "id": "72",
+            "text": "Wait, three nodes, two edges. The possible combinations are:",
+            "metadata": null
+        },
+        {
+            "id": "73",
+            "text": "- AB and BC: forms a chain A-B-C. Connected.",
+            "metadata": null
+        },
+        {
+            "id": "74",
+            "text": "- AB and AC: forms a fork (A connected to B and C). B and C can communicate via A. Connected.",
+            "metadata": null
+        },
+        {
+            "id": "75",
+            "text": "- AB and CD: but CD is not a pair of the three nodes. So no, that's not possible.",
+            "metadata": null
+        },
+        {
+            "id": "76",
+            "text": "So yes, for three nodes, if there are two edges, the graph is connected. So the graph is connected if there are two or three edges.",
+            "metadata": null
+        },
+        {
+            "id": "77",
+            "text": "Wait, what if there are two edges between AB and BC: yes, connected. If two edges between AB and AC: connected. If two edges between AB and BC: connected. So yes, any two edges in three nodes will form a connected graph.",
+            "metadata": null
+        },
+        {
+            "id": "78",
+            "text": "So the condition is:",
+            "metadata": null
+        },
+        {
+            "id": "79",
+            "text": "If the number of edges (each edge is a pair with distance <= R) is >= 2, then the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "80",
+            "text": "OR",
+            "metadata": null
+        },
+        {
+            "id": "81",
+            "text": "If the graph has two edges, then connected.",
+            "metadata": null
+        },
+        {
+            "id": "82",
+            "text": "Wait, but what about three nodes with two edges: AB and BC. So A is connected to B, B connected to C. Then the graph is connected. So yes.",
+            "metadata": null
+        },
+        {
+            "id": "83",
+            "text": "If two edges are AB and CD (but that's not possible here). So in our problem, the three nodes are A, B, C. So any two edges must be between two of these three.",
+            "metadata": null
+        },
+        {
+            "id": "84",
+            "text": "So, the conclusion is that for three nodes, the graph is connected if:",
+            "metadata": null
+        },
+        {
+            "id": "85",
+            "text": "The number of edges (edges where distance <= R) is >= 2.",
+            "metadata": null
+        },
+        {
+            "id": "86",
+            "text": "Wait, no. Wait, if two edges are AB and BC, then yes. If two edges are AB and AC, then yes. But what if two edges are AB and CD (but CD is not part of the nodes). So for our problem, since the nodes are A, B, C, the edges can only be AB, BC, CA.",
+            "metadata": null
+        },
+        {
+            "id": "87",
+            "text": "So, for three nodes, if there are two edges, the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "88",
+            "text": "Because any two edges must connect all three nodes. For example:",
+            "metadata": null
+        },
+        {
+            "id": "89",
+            "text": "AB and BC: A connected to B connected to C. All three connected.",
+            "metadata": null
+        },
+        {
+            "id": "90",
+            "text": "AB and AC: A is connected to B and C, so B and C can communicate through A.",
+            "metadata": null
+        },
+        {
+            "id": "91",
+            "text": "AB and CA: same as AB and AC.",
+            "metadata": null
+        },
+        {
+            "id": "92",
+            "text": "BC and CA: B connected to C connected to A. So all three connected.",
+            "metadata": null
+        },
+        {
+            "id": "93",
+            "text": "So in all cases, two edges in three nodes form a connected graph.",
+            "metadata": null
+        },
+        {
+            "id": "94",
+            "text": "So the condition for the graph being connected is:",
+            "metadata": null
+        },
+        {
+            "id": "95",
+            "text": "If the number of edges (AB, BC, CA) with distance <= R is >= 2.",
+            "metadata": null
+        },
+        {
+            "id": "96",
+            "text": "Wait, but there's another possibility. Suppose that all three pairs are not connected (all distances > R). Then output 'no'.",
+            "metadata": null
+        },
+        {
+            "id": "97",
+            "text": "If exactly one edge exists, then two nodes are connected, the third is isolated. So output 'no'.",
+            "metadata": null
+        },
+        {
+            "id": "98",
+            "text": "If two edges exist, output 'yes'.",
+            "metadata": null
+        },
+        {
+            "id": "99",
+            "text": "If three edges exist, output 'yes'.",
+            "metadata": null
+        },
+        {
+            "id": "100",
+            "text": "So the logic is:",
+            "metadata": null
+        },
+        {
+            "id": "101",
+            "text": "count = number of pairs with distance <= R.",
+            "metadata": null
+        },
+        {
+            "id": "102",
+            "text": "if count >= 2: output 'yes'",
+            "metadata": null
+        },
+        {
+            "id": "103",
+            "text": "else: output 'no'",
+            "metadata": null
+        },
+        {
+            "id": "104",
+            "text": "Is that correct?",
+            "metadata": null
+        },
+        {
+            "id": "105",
+            "text": "Wait, let's test with the examples.",
+            "metadata": null
+        },
+        {
+            "id": "106",
+            "text": "First example input:",
+            "metadata": null
+        },
+        {
+            "id": "107",
+            "text": "3",
+            "metadata": null
+        },
+        {
+            "id": "108",
+            "text": "1",
+            "metadata": null
+        },
+        {
+            "id": "109",
+            "text": "0 1",
+            "metadata": null
+        },
+        {
+            "id": "110",
+            "text": "0 0",
+            "metadata": null
+        },
+        {
+            "id": "111",
+            "text": "1 0",
+            "metadata": null
+        },
+        {
+            "id": "112",
+            "text": "So R=1.",
+            "metadata": null
+        },
+        {
+            "id": "113",
+            "text": "Points:",
+            "metadata": null
+        },
+        {
+            "id": "114",
+            "text": "Chef is (0,1), head server (0,0), sous-chef (1,0).",
+            "metadata": null
+        },
+        {
+            "id": "115",
+            "text": "Compute distances:",
+            "metadata": null
+        },
+        {
+            "id": "116",
+            "text": "Chef to head: sqrt((0-0)^2 + (1-0)^2) = 1. So <=1. So edge exists.",
+            "metadata": null
+        },
+        {
+            "id": "117",
+            "text": "Head to sous-chef: sqrt( (0-1)^2 + (0-0)^2 ) = 1. Edge exists.",
+            "metadata": null
+        },
+        {
+            "id": "118",
+            "text": "Sous-chef to Chef: sqrt( (0-1)^2 + (1-0)^2 ) = sqrt(2) ≈1.414>1. So edge does not exist.",
+            "metadata": null
+        },
+        {
+            "id": "119",
+            "text": "So edges are AB and BC (count=2). So count >=2 → output yes.",
+            "metadata": null
+        },
+        {
+            "id": "120",
+            "text": "Which matches the first test case's output.",
+            "metadata": null
+        },
+        {
+            "id": "121",
+            "text": "Second test case:",
+            "metadata": null
+        },
+        {
+            "id": "122",
+            "text": "R=2.",
+            "metadata": null
+        },
+        {
+            "id": "123",
+            "text": "Same points.",
+            "metadata": null
+        },
+        {
+            "id": "124",
+            "text": "Chef to head: 1 <=2 → edge exists.",
+            "metadata": null
+        },
+        {
+            "id": "125",
+            "text": "Head to sous-chef: 1 <=2 → edge exists.",
+            "metadata": null
+        },
+        {
+            "id": "126",
+            "text": "Sous-chef to Chef: sqrt(2) ≈1.414 <=2 → yes. So three edges. Count=3 → output yes. Which matches the sample.",
+            "metadata": null
+        },
+        {
+            "id": "127",
+            "text": "Third test case:",
+            "metadata": null
+        },
+        {
+            "id": "128",
+            "text": "R=2.",
+            "metadata": null
+        },
+        {
+            "id": "129",
+            "text": "Chef at (0,0), head at (0,2), sous-chef at (2,1).",
+            "metadata": null
+        },
+        {
+            "id": "130",
+            "text": "Compute distances:",
+            "metadata": null
+        },
+        {
+            "id": "131",
+            "text": "Chef to head: sqrt( (0-0)^2 + (0-2)^2 ) = 2 → which is <=2. Edge exists.",
+            "metadata": null
+        },
+        {
+            "id": "132",
+            "text": "Head to sous-chef: sqrt( (0-2)^2 + (2-1)^2 ) = sqrt(4+1)=sqrt(5)≈2.236>2 → no edge.",
+            "metadata": null
+        },
+        {
+            "id": "133",
+            "text": "Sous-chef to Chef: sqrt( (0-2)^2 + (0-1)^2 ) = sqrt(4+1) = sqrt(5) >2 → no edge.",
+            "metadata": null
+        },
+        {
+            "id": "134",
+            "text": "So edges are AB. Count=1. So output no. Which matches the third test case.",
+            "metadata": null
+        },
+        {
+            "id": "135",
+            "text": "So the logic seems to work.",
+            "metadata": null
+        },
+        {
+            "id": "136",
+            "text": "Another test case: two edges. Suppose Chef is connected to head and sous-chef. Then count=2. So output yes.",
+            "metadata": null
+        },
+        {
+            "id": "137",
+            "text": "Another case: two edges. Suppose Chef connected to head, and sous-chef connected to Chef. Then count=2. Output yes.",
+            "metadata": null
+        },
+        {
+            "id": "138",
+            "text": "So the code can check whether the number of edges (distance <= R) is at least two. If yes, output yes. Else, no.",
+            "metadata": null
+        },
+        {
+            "id": "139",
+            "text": "But wait, is there any case where count >=2 but the graph is not connected?",
+            "metadata": null
+        },
+        {
+            "id": "140",
+            "text": "Wait, suppose there are two edges, but they are AB and CD (but CD is not part of our three nodes). But that's impossible here. All edges are between the three nodes.",
+            "metadata": null
+        },
+        {
+            "id": "141",
+            "text": "So with three nodes, two edges will always form a connected graph. So the count >=2 implies the graph is connected.",
+            "metadata": null
+        },
+        {
+            "id": "142",
+            "text": "So yes, the code can be written as:",
+            "metadata": null
+        },
+        {
+            "id": "143",
+            "text": "if number of edges (pairs with distance <= R) >=2 → yes else no.",
+            "metadata": null
+        },
+        {
+            "id": "144",
+            "text": "But wait, let's think of a case where there are two edges, but the third node is not connected.",
+            "metadata": null
+        },
+        {
+            "id": "145",
+            "text": "Wait, for example:",
+            "metadata": null
+        },
+        {
+            "id": "146",
+            "text": "Three nodes A, B, C.",
+            "metadata": null
+        },
+        {
+            "id": "147",
+            "text": "Edges AB and BC. So A is connected to B, B connected to C. So all three are connected. So yes.",
+            "metadata": null
+        },
+        {
+            "id": "148",
+            "text": "Another example: edges AB and AC. So A is connected to B and C. So all three are connected.",
+            "metadata": null
+        },
+        {
+            "id": "149",
+            "text": "So no way to have two edges and a disconnected graph.",
+            "metadata": null
+        },
+        {
+            "id": "150",
+            "text": "Thus, the code can safely check if the count of edges (pairs with distance <= R) is >=2. If yes, output yes, else no.",
+            "metadata": null
+        },
+        {
+            "id": "151",
+            "text": "So the code can be written as:",
+            "metadata": null
+        },
+        {
+            "id": "152",
+            "text": "For each test case:",
+            "metadata": null
+        },
+        {
+            "id": "153",
+            "text": "Calculate the three pairwise distances.",
+            "metadata": null
+        },
+        {
+            "id": "154",
+            "text": "Check each pair.",
+            "metadata": null
+        },
+        {
+            "id": "155",
+            "text": "If two or more pairs have distance <= R → yes.",
+            "metadata": null
+        },
+        {
+            "id": "156",
+            "text": "Else → no.",
+            "metadata": null
+        },
+        {
+            "id": "157",
+            "text": "So that's the approach.",
+            "metadata": null
+        },
+        {
+            "id": "158",
+            "text": "Now, code steps:",
+            "metadata": null
+        },
+        {
+            "id": "159",
+            "text": "Read T test cases.",
+            "metadata": null
+        },
+        {
+            "id": "160",
+            "text": "For each test case:",
+            "metadata": null
+        },
+        {
+            "id": "161",
+            "text": "Read R.",
+            "metadata": null
+        },
+        {
+            "id": "162",
+            "text": "Read three lines for the three points.",
+            "metadata": null
+        },
+        {
+            "id": "163",
+            "text": "Compute all three pairs.",
+            "metadata": null
+        },
+        {
+            "id": "164",
+            "text": "Check how many pairs have distance squared <= R^2.",
+            "metadata": null
+        },
+        {
+            "id": "165",
+            "text": "If >=2 → yes else no.",
+            "metadata": null
+        },
+        {
+            "id": "166",
+            "text": "Thus, the code can be written as a function that reads input and outputs as per the problem.",
+            "metadata": null
+        },
+        {
+            "id": "167",
+            "text": "So the code would look like:",
+            "metadata": null
+        },
+        {
+            "id": "168",
+            "text": "def main():",
+            "metadata": null
+        },
+        {
+            "id": "169",
+            "text": " import sys",
+            "metadata": null
+        },
+        {
+            "id": "170",
+            "text": " input = sys.stdin.read().split()",
+            "metadata": null
+        },
+        {
+            "id": "171",
+            "text": " ptr = 0",
+            "metadata": null
+        },
+        {
+            "id": "172",
+            "text": " T = int(input[ptr])",
+            "metadata": null
+        },
+        {
+            "id": "173",
+            "text": " ptr +=1",
+            "metadata": null
+        },
+        {
+            "id": "174",
+            "text": " for _ in range(T):",
+            "metadata": null
+        },
+        {
+            "id": "175",
+            "text": " R = int(input[ptr])",
+            "metadata": null
+        },
+        {
+            "id": "176",
+            "text": " ptr +=1",
+            "metadata": null
+        },
+        {
+            "id": "177",
+            "text": " A = list(map(int, input[ptr:ptr+2]))",
+            "metadata": null
+        },
+        {
+            "id": "178",
+            "text": " ptr +=2",
+            "metadata": null
+        },
+        {
+            "id": "179",
+            "text": " B = list(map(int, input[ptr:ptr+2]))",
+            "metadata": null
+        },
+        {
+            "id": "180",
+            "text": " ptr +=2",
+            "metadata": null
+        },
+        {
+            "id": "181",
+            "text": " C = list(map(int, input[ptr:ptr+2]))",
+            "metadata": null
+        },
+        {
+            "id": "182",
+            "text": " ptr +=2",
+            "metadata": null
+        },
+        {
+            "id": "183",
+            "text": " count = 0",
+            "metadata": null
+        },
+        {
+            "id": "184",
+            "text": " # AB",
+            "metadata": null
+        },
+        {
+            "id": "185",
+            "text": " dx = A[0] - B[0]",
+            "metadata": null
+        },
+        {
+            "id": "186",
+            "text": " dy = A[1] - B[1]",
+            "metadata": null
+        },
+        {
+            "id": "187",
+            "text": " if dx*dx + dy*dy <= R*R:",
+            "metadata": null
+        },
+        {
+            "id": "188",
+            "text": " count +=1",
+            "metadata": null
+        },
+        {
+            "id": "189",
+            "text": " # BC",
+            "metadata": null
+        },
+        {
+            "id": "190",
+            "text": " dx = B[0] - C[0]",
+            "metadata": null
+        },
+        {
+            "id": "191",
+            "text": " dy = B[1] - C[1]",
+            "metadata": null
+        },
+        {
+            "id": "192",
+            "text": " if dx*dx + dy*dy <= R*R:",
+            "metadata": null
+        },
+        {
+            "id": "193",
+            "text": " count +=1",
+            "metadata": null
+        },
+        {
+            "id": "194",
+            "text": " # CA",
+            "metadata": null
+        },
+        {
+            "id": "195",
+            "text": " dx = C[0] - A[0]",
+            "metadata": null
+        },
+        {
+            "id": "196",
+            "text": " dy = C[1] - A[1]",
+            "metadata": null
+        },
+        {
+            "id": "197",
+            "text": " if dx*dx + dy*dy <= R*R:",
+            "metadata": null
+        },
+        {
+            "id": "198",
+            "text": " count +=1",
+            "metadata": null
+        },
+        {
+            "id": "199",
+            "text": " if count >=2:",
+            "metadata": null
+        },
+        {
+            "id": "200",
+            "text": " print(\"yes\")",
+            "metadata": null
+        },
+        {
+            "id": "201",
+            "text": " else:",
+            "metadata": null
+        },
+        {
+            "id": "202",
+            "text": " print(\"no\")",
+            "metadata": null
+        },
+        {
+            "id": "203",
+            "text": "main()",
+            "metadata": null
+        },
+        {
+            "id": "204",
+            "text": "But the problem says that the function should take stdin as input and print the output. So the code reads from stdin, processes, and prints.",
+            "metadata": null
+        },
+        {
+            "id": "205",
+            "text": "Yes.",
+            "metadata": null
+        },
+        {
+            "id": "206",
+            "text": "This should handle all cases correctly.",
+            "metadata": null
+        },
+        {
+            "id": "207",
+            "text": "Another test case: where two pairs are connected but through a third.",
+            "metadata": null
+        },
+        {
+            "id": "208",
+            "text": "For example:",
+            "metadata": null
+        },
+        {
+            "id": "209",
+            "text": "R=5.",
+            "metadata": null
+        },
+        {
+            "id": "210",
+            "text": "A (0,0), B (0,5), C (0,10).",
+            "metadata": null
+        },
+        {
+            "id": "211",
+            "text": "AB distance is 5 → yes.",
+            "metadata": null
+        },
+        {
+            "id": "212",
+            "text": "BC distance is5 → yes.",
+            "metadata": null
+        },
+        {
+            "id": "213",
+            "text": "CA distance is10 → no.",
+            "metadata": null
+        },
+        {
+            "id": "214",
+            "text": "Count is 2 → output yes. So all three can communicate through B.",
+            "metadata": null
+        },
+        {
+            "id": "215",
+            "text": "So the code works.",
+            "metadata": null
+        },
+        {
+            "id": "216",
+            "text": "Another test case where only one edge exists:",
+            "metadata": null
+        },
+        {
+            "id": "217",
+            "text": "R=5.",
+            "metadata": null
+        },
+        {
+            "id": "218",
+            "text": "A (0,0), B (0,6), C (0,5).",
+            "metadata": null
+        },
+        {
+            "id": "219",
+            "text": "AB distance 6>5 → no.",
+            "metadata": null
+        },
+        {
+            "id": "220",
+            "text": "BC distance 1 → yes.",
+            "metadata": null
+        },
+        {
+            "id": "221",
+            "text": "CA distance 5 → yes.",
+            "metadata": null
+        },
+        {
+            "id": "222",
+            "text": "So count is 2 → yes. Because BC and CA are connected. So B and C are connected, C and A are connected. So B can reach A via C.",
+            "metadata": null
+        },
+        {
+            "id": "223",
+            "text": "Thus, the code works.",
+            "metadata": null
+        }
+    ],
+    "solution": "To solve this problem, we need to determine if three people (Chef, head server, and sous-chef) can communicate with each other using transceivers that have a limited range. Communication can be direct if they are within the range or indirect via another person acting as an intermediary.\n\n### Approach\n1. **Input Reading**: Read the number of test cases and for each test case, read the maximum communication range (R) and the coordinates of the three people.\n2. **Distance Calculation**: For each pair of people, calculate the squared distance between their coordinates to avoid floating-point inaccuracies.\n3. **Check Communication**: Determine how many pairs can communicate directly by comparing their squared distance with R^2.\n4. **Connected Graph Check**: If at least two pairs can communicate directly, the three people form a connected graph either directly or through an intermediary, allowing all to communicate.\n\n### Solution Code\n```python\ndef main():\n import sys\n input = sys.stdin.read().split()\n ptr = 0\n T = int(input[ptr])\n ptr += 1\n for _ in range(T):\n R = int(input[ptr])\n ptr += 1\n A = list(map(int, input[ptr:ptr+2]))\n ptr += 2\n B = list(map(int, input[ptr:ptr+2]))\n ptr += 2\n C = list(map(int, input[ptr:ptr+2]))\n ptr += 2\n count = 0\n \n # Check Chef to Head Server\n dx = A[0] - B[0]\n dy = A[1] - B[1]\n if dx * dx + dy * dy <= R * R:\n count += 1\n \n # Check Head Server to Sous-Chef\n dx = B[0] - C[0]\n dy = B[1] - C[1]\n if dx * dx + dy * dy <= R * R:\n count += 1\n \n # Check Sous-Chef to Chef\n dx = C[0] - A[0]\n dy = C[1] - A[1]\n if dx * dx + dy * dy <= R * R:\n count += 1\n \n print(\"yes\" if count >= 2 else \"no\")\n\nmain()\n```\n\n### Explanation\n- **Reading Input**: The input is read all at once and split into a list for efficient processing.\n- **Distance Calculation**: For each pair of points (Chef-Head, Head-Sous, Sous-Chef), the squared distance is computed and compared against R^2.\n- **Communication Check**: The count of valid direct communication pairs is determined. If this count is 2 or more, it ensures that all three can communicate either directly or through an intermediary, thus printing \"yes\". Otherwise, it prints \"no\".\n\nThis approach efficiently checks the necessary conditions using integer arithmetic to avoid precision issues, ensuring correctness and optimal performance."
+}
