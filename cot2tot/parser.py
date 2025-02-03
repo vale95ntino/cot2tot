@@ -2,38 +2,47 @@ from typing import List
 from cot2tot.models import ChainOfThoughts, Thought, GraphOfThoughts, ListOfEdges
 from cot2tot.utils import extract_between
 from cot2tot.llm import call_llm
+from cot2tot.visualize import animate_as_tree, plot_as_tree
+
 
 def parse_cot_manually(
-        llm_output: str, 
-        thinking_start_key:str="<|begin_of_thought|>",
-        thinking_end_key:str="<|end_of_thought|>",
-        solution_start_key:str="<|begin_of_solution|>",
-        solution_end_key:str="<|end_of_solution|>",
-        thought_split_key:str="\n\n"
-        )-> ChainOfThoughts:
+    llm_output: str,
+    thinking_start_key: str = "<|begin_of_thought|>",
+    thinking_end_key: str = "<|end_of_thought|>",
+    solution_start_key: str = "<|begin_of_solution|>",
+    solution_end_key: str = "<|end_of_solution|>",
+    thought_split_key: str = "\n\n",
+) -> ChainOfThoughts:
     """Splits a CoT string into individual Thought objects."""
     # get solution
-    solution = extract_between(llm_output,solution_start_key, solution_end_key)
+    solution = extract_between(llm_output, solution_start_key, solution_end_key)
     if len(solution) == 0:
         raise TypeError("Solution start and end keys not present in 'cot'.")
     if len(solution) > 1:
-        raise TypeError("Solution start and end keys are present in 'cot' more than once.")
+        raise TypeError(
+            "Solution start and end keys are present in 'cot' more than once."
+        )
     solution = solution[0]
     # get reasoning
-    thinking = extract_between(llm_output,thinking_start_key, thinking_end_key)
+    thinking = extract_between(llm_output, thinking_start_key, thinking_end_key)
     if len(thinking) == 0:
         raise TypeError("Thinking start and end keys not present in 'cot'.")
     if len(thinking) > 1:
-        raise TypeError("Thinking start and end keys are present in 'cot' more than once.")
+        raise TypeError(
+            "Thinking start and end keys are present in 'cot' more than once."
+        )
     thinking_str_list = thinking[0].split(thought_split_key)
     # construct reasoning response and return
     return ChainOfThoughts(
-        reasoning=[Thought(id=str(i+1),text=thought_str) for i, thought_str in enumerate(thinking_str_list)],
-        solution=solution
+        reasoning=[
+            Thought(id=str(i + 1), text=thought_str)
+            for i, thought_str in enumerate(thinking_str_list)
+        ],
+        solution=solution,
     )
 
 
-def parse_cot_with_llm(llm_output: str)-> ChainOfThoughts:
+def parse_cot_with_llm(llm_output: str) -> ChainOfThoughts:
     """Splits a CoT string into individual Thought objects."""
     prompt = f"""
     Given the following reasoning chain of thoughts from an LLM, split it into a formal Python object.
@@ -48,15 +57,15 @@ def parse_cot_with_llm(llm_output: str)-> ChainOfThoughts:
     """
     response = call_llm(prompt, response_format=ChainOfThoughts)
     return response
-    
 
-def cot_to_graph(cot: ChainOfThoughts)->GraphOfThoughts:
+
+def cot_to_graph(cot: ChainOfThoughts) -> GraphOfThoughts:
     graph = GraphOfThoughts()
-    
+
     # Add nodes
     for thought in cot.reasoning:
         graph.add_thought(thought)
-    
+
     # Use LLM to determine relationships
     prompt = f"""
     Given the following extracted LLM chain of thoughts, construct a *tree of thoughts* that represents the thoughts of the LLM.
@@ -100,56 +109,13 @@ def cot_to_graph(cot: ChainOfThoughts)->GraphOfThoughts:
     """
     for thought in cot.reasoning:
         prompt += f"{thought}\n"
-        
+
     identified_edges: ListOfEdges = call_llm(prompt, response_format=ListOfEdges)
-    
+
     if not identified_edges:
         raise RuntimeError("Error: LLM did not return a valid response.")
-    
+
     for edge in identified_edges.list:
         graph.add_edge(from_id=edge.from_node, to_id=edge.to_node, comment=edge.comment)
-    
+
     return graph
-
-
-
-
-import json
-from pathlib import Path
-if __name__ == "__main__":
-    file_path = Path(__file__).parent.parent / "tests" / "fixtures" / "graph3.json"
-    with file_path.open("r", encoding="utf-8") as f:
-        # # get llm otput
-        # output = json.load(f)
-        # llm_output = output["conversation"][1]["value"]
-        # # construct CoT
-        # cot: ChainOfThoughts= parse_cot_with_llm(llm_output)
-        # cot_v2 : ChainOfThoughts = parse_cot_manually(llm_output)
-        # print("# reasoning steps:", len(cot.reasoning), "(llm extraction) vs", len(cot_v2.reasoning), "(manual extraction)")
-        # save CoT
-        # Convert to JSON string
-        # json_data = cot.model_dump_json() 
-        # with open("cot2.json", "w") as f2:
-        #     f2.write(json_data)
-        # construct graph
-        # cot = json.load(f)
-        # cot = ChainOfThoughts.model_validate(cot)
-        # graph = cot_to_graph(cot)
-        # # save graph
-        # json_data = graph.model_dump_json() 
-        # with open("graph3.json", "w") as f2:
-        #     f2.write(json_data)
-        # get graph
-        graph = json.load(f)
-        graph = GraphOfThoughts.model_validate(graph)
-        # visualize
-        graph.force_nx_graph_update()
-        graph.animate_as_tree(show_reasoning=True, speed=0.3, save_file_name="animation.gif")
-        
-        
-
-
-
-
-
-
