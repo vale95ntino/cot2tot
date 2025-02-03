@@ -16,6 +16,7 @@ matplotlib = "^3.10.0"
 pydot = "^3.0.4"
 numpy = "^2.2.2"
 imageio = "^2.37.0"
+mplcursors = "^0.6"
 
 
 [tool.poetry.group.dev.dependencies]

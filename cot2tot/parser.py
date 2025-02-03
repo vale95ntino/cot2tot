@@ -144,7 +144,7 @@ if __name__ == "__main__":
         graph = GraphOfThoughts.model_validate(graph)
         # visualize
         graph.force_nx_graph_update()
-        graph.animate_as_tree(show_reasoning=True, speed=0.5)
+        graph.animate_as_tree(show_reasoning=True, speed=0.3, save_file_name="animation.gif")
         
         
 

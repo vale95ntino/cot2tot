@@ -937,6 +937,24 @@ platformdirs = ">=2.2.0"
 pyyaml = ">=5.1"
 
 [[package]]
+name = "mplcursors"
+version = "0.6"
+description = "Interactive data selection cursors for Matplotlib."
+category = "main"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "mplcursors-0.6-py3-none-any.whl", hash = "sha256:2d900267848378987c46ad2504ea484e274adbb596a71547c5c95d2b4f520a56"},
+    {file = "mplcursors-0.6.tar.gz", hash = "sha256:775217cd09965bb17179c0cd0fb123fed4f4f00d7ade7e7e8788a6581fb2c8a9"},
+]
+
+[package.dependencies]
+matplotlib = ">=3.1,<3.7.1 || >3.7.1"
+
+[package.extras]
+docs = ["pandas", "pydata-sphinx-theme (!=0.10.1)", "sphinx", "sphinx-gallery"]
+
+[[package]]
 name = "networkx"
 version = "3.4.2"
 description = "Python package for creating and manipulating graphs and networks"
@@ -1738,4 +1756,4 @@ watchmedo = ["PyYAML (>=3.10)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "07198d5bb9d31e185131b44329226ddb711cca2631e773fc3b2189436d816645"
+content-hash = "41af855787dff3c823548cf65248bb0ef7266030c1bf2f451600aaaa08961389"
