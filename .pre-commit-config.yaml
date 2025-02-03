@@ -1,0 +1,23 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-merge-conflict
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.0.241
+    hooks:
+      - id: ruff
+        args: ["--fix", "--line-length=120"]
+
+  - repo: local
+    hooks:
+      - id: pytest
+        name: Run Pytest
+        entry: poetry run pytest
+        language: system
+        types: [python]
+        pass_filenames: false

@@ -1,6 +1,6 @@
 from openai import OpenAI
 import os
-from typing import Optional, Dict
+from typing import Optional
 from dotenv import load_dotenv
 from pydantic import BaseModel
 
@@ -38,7 +38,7 @@ def call_llm(
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a helpful AI that answers using the desired format to construct chains of thoughts and graphs of thoughts for LLM applications.",
+                    "content": "You are a helpful AI that answers using the desired format to construct chains of thoughts and graphs of thoughts for LLM applications.", # noqa: E501
                 },
                 {"role": "user", "content": prompt},
             ],
