@@ -8,7 +8,9 @@ from cot2tot.utils import get_tree_positions
 from matplotlib.widgets import Cursor
 import matplotlib.animation as animation
 import textwrap
-
+import imageio
+import io
+import numpy as np
 
 class Thought(BaseModel):
     id: str  # Unique identifier for the thought
@@ -133,7 +135,7 @@ class GraphOfThoughts(BaseModel):
         fig.canvas.mpl_connect("motion_notify_event", on_hover)
         plt.show()
 
-    def animate_as_tree(self, root=None, speed=0.4, show_reasoning=False):
+    def animate_as_tree(self, root=None, speed=0.4, show_reasoning=False, save_file_name:Optional[str]="animation.gif"):
         if not root:
             if "0" in self.nodes:
                 root = "0"
@@ -154,7 +156,6 @@ class GraphOfThoughts(BaseModel):
 
         # Create figure with two subplots: tree (ax1) and reasoning text (ax2)
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 7), gridspec_kw={'height_ratios': [4, 1]})
-
         ax1.set_title("Tree of Thoughts - Animation")
         ax1.axis("off")  # Remove axis box around the tree plot
         ax2.axis("off")  # Hide axes for the reasoning box
@@ -164,6 +165,9 @@ class GraphOfThoughts(BaseModel):
         
         visible_nodes = set()
         previous_node = None  # Track the last node added
+
+        # If saving to file, prepare a list to capture frames.
+        frames = [] if save_file_name is not None else None
 
         for node in nodes_in_order:
             visible_nodes.add(node)
@@ -186,13 +190,13 @@ class GraphOfThoughts(BaseModel):
             
             # Draw nodes with updated colors
             nx.draw_networkx_nodes(G, pos, ax=ax1, nodelist=list(visible_nodes), 
-                                node_color=[node_colors[n] for n in visible_nodes], node_size=node_size)
+                                    node_color=[node_colors[n] for n in visible_nodes], node_size=node_size)
             
             # Draw edges only if both nodes are visible
             visible_edges = [(u, v) for u, v in G.edges if u in visible_nodes and v in visible_nodes]
             nx.draw_networkx_edges(G, pos, ax=ax1, edgelist=visible_edges, edge_color='gray')
 
-            # Update reasoning text
+            # Update reasoning text if enabled
             if show_reasoning:
                 ax2.clear()
                 ax2.axis("off")
@@ -206,9 +210,30 @@ class GraphOfThoughts(BaseModel):
                         color=reasoning_color)
             
             plt.pause(speed)
-            
+
+            # Capture frame if saving as gif
+            if save_file_name is not None:
+                # Draw the canvas to update it
+                fig.canvas.draw()
+                # Save the current figure to an in-memory buffer as PNG
+                buf = io.BytesIO()
+                fig.savefig(buf, format='png')
+                buf.seek(0)
+                # Read the PNG buffer into an image array
+                image = imageio.imread(buf)
+                frames.append(image)
+                buf.close()
+
             # After the pause, reset the newly added node color to normal
             node_colors[node] = 'lightblue'
             previous_node = node  # Track last added node
 
         plt.show()
+
+        # If a save filename was provided, write the frames as a gif.
+        if save_file_name is not None and frames:
+            # Calculate frames per second based on the pause duration
+            fps = 1 / speed if speed > 0 else 1
+            imageio.mimsave(save_file_name, frames, fps=fps)
+            print(f"Animation saved to {save_file_name}")
+

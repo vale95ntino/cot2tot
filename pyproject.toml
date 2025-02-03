@@ -14,6 +14,8 @@ python-dotenv = "^1.0.1"
 networkx = "^3.4.2"
 matplotlib = "^3.10.0"
 pydot = "^3.0.4"
+numpy = "^2.2.2"
+imageio = "^2.37.0"
 
 
 [tool.poetry.group.dev.dependencies]
