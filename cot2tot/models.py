@@ -4,6 +4,19 @@ from networkx.readwrite import json_graph
 from pydantic import BaseModel, field_serializer, field_validator, ConfigDict
 
 
+class CoT2ToTConfig(BaseModel):
+    """
+    Represent the config file used to setting up the CoT2ToT class.
+
+    Attributes:
+        llm_endpoint (str): Endpoint used for LLM in OpenAI SDK
+        llm_key (str): Key for endpoint used for LLM in OpenAI SDK
+        llm_model (str): Key for model used for LLM in OpenAI SDK
+    """
+    llm_endpoint: str
+    llm_key: str
+    llm_model: str
+
 class Thought(BaseModel):
     """
     Represents an individual thought with associated text and optional metadata.
