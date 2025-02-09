@@ -61,7 +61,31 @@ poetry install
 
 ## Usage
 
-The package includes a CLI tool (`quick_start.py`) for running different processing steps.
+You can create a CoT2ToT instance by using your own LLM enpoint and key which will be used with the OpenAI python library. Once a graph is created, you can plot it or animate it.
+
+```python
+from cot2tot import CoT2ToT, CoT2ToTConfig
+
+config = CoT2ToTConfig(
+    llm_endpoint="<YOUR ENDPOINT>",
+    llm_key="<YOUR KEY>",
+    llm_model="<CHOSEN LLM MODEL>"
+)
+
+cot2tot_instance = CoT2ToT(config)
+
+example_reasoning = "<|begin_of_thought|>[....]<|end_of_solution|>"
+
+cot2tot_instance.run_pipeline(example_reasoning, verbose=True, plot=False)
+
+cot2tot_instance.plot()
+
+cot2tot_instance.animate(save_file_name="example_video.gif")
+```
+
+## CLI
+
+The package includes an CLI tool (`cli_quick_start.py`) for running different processing steps.
 
 ### 1. Parsing an LLM Output
 
