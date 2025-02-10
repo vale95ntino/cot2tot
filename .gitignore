@@ -173,6 +173,4 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# default output files
-animation.gif
 .vscode/settings.json
