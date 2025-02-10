@@ -5,6 +5,29 @@ from pydantic import BaseModel, field_serializer, field_validator, ConfigDict
 
 
 class CoT2ToTVisualConfig(BaseModel):
+    """
+    Configuration model for visualizing the Graph of Thoughts.
+
+    This model defines the default parameters used in the visualization process,
+    including figure dimensions, node sizing, animation fade steps, vertical spacing
+    adjustments, and dynamic scaling thresholds.
+
+    Attributes:
+        DEFAULT_FIG_SIZE (Tuple[float, float]):
+            The default size (width, height) for the matplotlib figure.
+        DEFAULT_NODE_SIZE (int):
+            The default node size used for drawing graph nodes.
+        MIN_NODE_SIZE (int):
+            The minimum node size allowed in the visualization.
+        MAX_NODE_SIZE (int):
+            The maximum node size allowed in the visualization.
+        FADE_STEPS (int):
+            The number of subframes for the fade-in animation of nodes.
+        Y_OFFSET_INCREMENT (int):
+            The additional vertical spacing between disconnected graph components.
+        SHRINK_THRESHOLDS (List[int]):
+            A list of thresholds used to determine when nodes should be dynamically scaled down.
+    """
     DEFAULT_FIG_SIZE: Tuple[float, float] = (8, 6)
     DEFAULT_NODE_SIZE: int = 2000
     MIN_NODE_SIZE: int = 100
@@ -34,6 +57,7 @@ class CoT2ToTVisualConfig(BaseModel):
         120,
         130,
     ]
+
 
 class CoT2ToTConfig(BaseModel):
     """

@@ -16,7 +16,7 @@ class LLMWrapper:
 
         Args:
             prompt (str): The input prompt for the LLM.
-            model (str): The model name (default: "gpt-4o-mini").
+            response_format (BaseModel): BaseModel used for Pydantic structured output.
             temperature (float): Controls randomness (0 = quasi-deterministic, 1 = more creative).
             max_tokens (int): Limits the response length.po
 
