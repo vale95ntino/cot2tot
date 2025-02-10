@@ -175,3 +175,4 @@ cython_debug/
 
 # default output files
 animation.gif
+.vscode/settings.json

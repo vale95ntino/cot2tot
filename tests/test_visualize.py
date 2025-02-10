@@ -9,7 +9,8 @@ import matplotlib.pyplot as plt
 import imageio
 import pytest
 
-from cot2tot.visualize import plot_as_tree, animate_as_tree
+from cot2tot.visualize import Visualizer
+from cot2tot.models import CoT2ToTVisualConfig
 
 matplotlib.use("Agg")
 
@@ -17,7 +18,6 @@ matplotlib.use("Agg")
 # --- Helper class for capturing imageio.mimsave calls --- #
 class DummySaver:
     """A dummy saver to capture calls to imageio.mimsave."""
-
     def __init__(self):
         self.called = False
         self.fps = None
@@ -31,12 +31,11 @@ class DummySaver:
         self.fps = fps
 
 
-# --- Tests for plot_as_tree --- #
-
+# --- Tests for Visualizer.plot_as_tree --- #
 
 def test_plot_as_tree_valid(monkeypatch):
     """
-    Test that plot_as_tree displays a valid tree plot when a valid root is present.
+    Test that Visualizer.plot_as_tree displays a valid tree plot when a valid root is present.
     We monkey-patch plt.show to prevent an interactive window.
     """
     # Create a simple graph with a default root "0".
@@ -49,13 +48,15 @@ def test_plot_as_tree_valid(monkeypatch):
     monkeypatch.setattr(plt, "show", lambda: None)
     monkeypatch.setattr(plt, "pause", lambda x: None)
 
-    # Should not raise an error.
-    plot_as_tree(G)
+    # Provide a default visual configuration.
+    visualizer = Visualizer(CoT2ToTVisualConfig())
+    # This call should complete without raising an error.
+    visualizer.plot_as_tree(G)
 
 
 def test_plot_as_tree_invalid_root(monkeypatch):
     """
-    Test that plot_as_tree raises a ValueError when no default root ("0" or "1")
+    Test that Visualizer.plot_as_tree raises a ValueError when no default root ("0" or "1")
     is present and no root is provided.
     """
     # Create a graph with nodes that do not include "0" or "1".
@@ -64,16 +65,16 @@ def test_plot_as_tree_invalid_root(monkeypatch):
     G.add_node("B", label="Node B")
     G.add_edge("A", "B")
 
+    visualizer = Visualizer(CoT2ToTVisualConfig())
     with pytest.raises(ValueError, match="Could not infer root id"):
-        plot_as_tree(G)
+        visualizer.plot_as_tree(G)
 
 
-# --- Tests for animate_as_tree --- #
-
+# --- Tests for Visualizer.animate_as_tree --- #
 
 def test_animate_as_tree_valid(monkeypatch):
     """
-    Test that animate_as_tree runs without error on a simple graph.
+    Test that Visualizer.animate_as_tree runs without error on a simple graph.
     Monkey-patch plt.show and plt.pause so the test runs quickly.
     """
     G = nx.DiGraph()
@@ -87,13 +88,14 @@ def test_animate_as_tree_valid(monkeypatch):
     monkeypatch.setattr(plt, "show", lambda: None)
     monkeypatch.setattr(plt, "pause", lambda x: None)
 
+    visualizer = Visualizer(CoT2ToTVisualConfig())
     # Run animation without saving.
-    animate_as_tree(G, speed=0.1)
+    visualizer.animate_as_tree(G, speed=0.1)
 
 
 def test_animate_as_tree_save(monkeypatch):
     """
-    Test that animate_as_tree calls imageio.mimsave to save the animation when a filename is provided.
+    Test that Visualizer.animate_as_tree calls imageio.mimsave to save the animation when a filename is provided.
     Monkey-patch imageio.mimsave to capture the call.
     """
     G = nx.DiGraph()
@@ -111,21 +113,18 @@ def test_animate_as_tree_save(monkeypatch):
     tmp_dir = tempfile.gettempdir()
     tmp_file = os.path.join(tmp_dir, "test_animation.gif")
 
-    animate_as_tree(G, speed=0.05, save_file_name=tmp_file)
+    visualizer = Visualizer(CoT2ToTVisualConfig())
+    visualizer.animate_as_tree(G, speed=0.05, save_file_name=tmp_file)
 
-    assert dummy_saver.called, (
-        "Expected imageio.mimsave to be called for saving animation."
-    )
-    assert dummy_saver.filename == tmp_file, (
-        "Filename passed to mimsave does not match."
-    )
+    assert dummy_saver.called, "Expected imageio.mimsave to be called for saving animation."
+    assert dummy_saver.filename == tmp_file, "Filename passed to mimsave does not match."
     assert dummy_saver.frames is not None and len(dummy_saver.frames) > 0
     assert dummy_saver.fps > 0
 
 
 def test_animate_as_tree_show_reasoning(monkeypatch):
     """
-    Test that animate_as_tree runs with show_reasoning enabled without errors.
+    Test that Visualizer.animate_as_tree runs with show_reasoning enabled without errors.
     We simulate a more complex graph with multiple nodes and labels.
     """
     G = nx.DiGraph()
@@ -145,8 +144,9 @@ def test_animate_as_tree_show_reasoning(monkeypatch):
     monkeypatch.setattr(plt, "show", lambda: None)
     monkeypatch.setattr(plt, "pause", lambda x: None)
 
+    visualizer = Visualizer(CoT2ToTVisualConfig())
     # Running with show_reasoning=True should complete without error.
-    animate_as_tree(G, speed=0.05, show_reasoning=True)
+    visualizer.animate_as_tree(G, speed=0.05, show_reasoning=True)
 
 
 if __name__ == "__main__":

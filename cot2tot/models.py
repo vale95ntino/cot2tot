@@ -1,8 +1,39 @@
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 import networkx as nx
 from networkx.readwrite import json_graph
 from pydantic import BaseModel, field_serializer, field_validator, ConfigDict
 
+
+class CoT2ToTVisualConfig(BaseModel):
+    DEFAULT_FIG_SIZE: Tuple[float, float] = (8, 6)
+    DEFAULT_NODE_SIZE: int = 2000
+    MIN_NODE_SIZE: int = 100
+    MAX_NODE_SIZE: int = 2000
+    FADE_STEPS: int = 2  # Number of subframes for fade-in animation
+    Y_OFFSET_INCREMENT: int = (
+        2  # Additional vertical spacing between disconnected components
+    )
+    SHRINK_THRESHOLDS: List[int] = [
+        10,
+        20,
+        30,
+        35,
+        40,
+        45,
+        50,
+        55,
+        60,
+        65,
+        70,
+        75,
+        80,
+        85,
+        90,
+        100,
+        110,
+        120,
+        130,
+    ]
 
 class CoT2ToTConfig(BaseModel):
     """
@@ -16,6 +47,7 @@ class CoT2ToTConfig(BaseModel):
     llm_endpoint: str
     llm_key: str
     llm_model: str
+    visual_settings: CoT2ToTVisualConfig = CoT2ToTVisualConfig()
 
 class Thought(BaseModel):
     """
