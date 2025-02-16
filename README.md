@@ -23,6 +23,35 @@ CoT2ToT is a Python package that processes and visualizes chain-of-thought (CoT)
 - **Command-Line Interface (CLI):**
   A CLI tool (`quick_start.py`) that allows you to run the different steps—parsing, graph conversion, and visualization—from the command line.
 
+## Installation and Usage
+```bash
+pip install cot2tot
+```
+
+
+You can create a CoT2ToT instance by using your own LLM enpoint and key which will be used with the OpenAI python library. Once a graph is created, you can plot it or animate it.
+
+```python
+from cot2tot import CoT2ToT, CoT2ToTConfig
+
+config = CoT2ToTConfig(
+    llm_endpoint="<YOUR ENDPOINT>",
+    llm_key="<YOUR KEY>",
+    llm_model="<CHOSEN LLM MODEL>"
+)
+
+cot2tot_instance = CoT2ToT(config)
+
+example_reasoning = "<|begin_of_thought|>[....]<|end_of_solution|>"
+
+cot2tot_instance.run_pipeline(example_reasoning, verbose=True, plot=False)
+
+cot2tot_instance.plot()
+
+cot2tot_instance.animate(save_file_name="example_video.gif")
+```
+
+
 ## Repository Structure
 
 - **cot2tot/**
@@ -49,7 +78,7 @@ CoT2ToT is a Python package that processes and visualizes chain-of-thought (CoT)
 - **pyproject.toml**
   Poetry configuration file that manages dependencies and package metadata.
 
-## Installation with Poetry
+## How to contribute
 
 CoT2ToT uses [Poetry](https://python-poetry.org/) for dependency management and packaging.
 
@@ -59,29 +88,6 @@ cd cot2tot
 poetry install
 ```
 
-## Usage
-
-You can create a CoT2ToT instance by using your own LLM enpoint and key which will be used with the OpenAI python library. Once a graph is created, you can plot it or animate it.
-
-```python
-from cot2tot import CoT2ToT, CoT2ToTConfig
-
-config = CoT2ToTConfig(
-    llm_endpoint="<YOUR ENDPOINT>",
-    llm_key="<YOUR KEY>",
-    llm_model="<CHOSEN LLM MODEL>"
-)
-
-cot2tot_instance = CoT2ToT(config)
-
-example_reasoning = "<|begin_of_thought|>[....]<|end_of_solution|>"
-
-cot2tot_instance.run_pipeline(example_reasoning, verbose=True, plot=False)
-
-cot2tot_instance.plot()
-
-cot2tot_instance.animate(save_file_name="example_video.gif")
-```
 
 ## CLI
 
