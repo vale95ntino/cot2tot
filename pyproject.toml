@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cot2tot"
-version = "0.1.0"
+version = "0.1.1"
 description = "A tool for converting chain-of-thought outputs into tree-of-thought visualizations."
 authors = ["vale95ntino"]
 license = "Apache-2.0"
