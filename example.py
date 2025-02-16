@@ -9,7 +9,8 @@ if not api_key:
         "Missing OPENAI_API_KEY. Set it as an environment variable in .env file."
     )
 api_endpoint = os.getenv("OPENAI_API_ENDPOINT")
-if not api_key:
+#api_endpoint = "https://api.openai.com/v1/"
+if not api_endpoint:
     raise ValueError(
         "Missing OPENAI_API_ENDPOINT. Set it as an environment variable in .env file."
     )

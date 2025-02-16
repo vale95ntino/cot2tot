@@ -24,7 +24,7 @@ class LLMWrapper:
             BaseModel: The response from the LLM or None if an error occurs.
         """
         try:
-            client = OpenAI()
+            client = OpenAI(api_key=self.config.llm_key, base_url=self.config.llm_endpoint)
             completion = client.beta.chat.completions.parse(
                 model=self.config.llm_model,
                 messages=[
