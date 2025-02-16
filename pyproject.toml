@@ -2,7 +2,7 @@
 name = "cot2tot"
 version = "0.1.0"
 description = "A tool for converting chain-of-thought outputs into tree-of-thought visualizations."
-authors = ["vale95ntino <assandrivalentino@gmail.com>"]
+authors = ["vale95ntino"]
 license = "Apache-2.0"
 readme = "README.md"
 packages = [{ include = "cot2tot" }]
